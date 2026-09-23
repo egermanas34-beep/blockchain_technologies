@@ -12,6 +12,8 @@ using std::endl;
 using std::ofstream;
 using std::ispunct;
 
+
+void paverstiASCII(string t);
 int main() {
 SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     SetConsoleCP(CP_UTF8); // Nustatome konsolės įvesties koduotę į UTF-8
@@ -20,12 +22,16 @@ SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     cout<<" iveskite teksta:"<<endl;
     getline(cin, tekstas);
 
-    for(int i = 0; i < tekstas.length(); i++)
-    {
-        char simbolis = tekstas.at(i);
-        cout << int(simbolis) << " ";
-    }
+   paverstiASCII(tekstas);
     cout << endl;
 
     return 0;
+}
+void paverstiASCII(string t)
+{
+     for(int i = 0; i < t.length(); i++)
+    {
+        char simbolis = t.at(i);
+        cout << int(simbolis) << " ";
+    }
 }
