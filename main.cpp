@@ -50,10 +50,16 @@ int gautiBaitus(string t)
 std::array<uint32_t, 8> gautiHash(string t)
 { 
     std::array<uint32_t, 8> hash{};
-    for(int i = 0; i < t.length(); i++)
+    for(size_t i = 0; i < t.length(); i++)
     {
+
         unsigned char simbolis = t.at(i);
-        hash[i % 8] += int(simbolis) * (i + 1);
+        size_t pozicija = i % 8; 
+        hash[pozicija] += uint32_t(simbolis) * uint32_t(i + 1);
+        if(pozicija > 0)
+        {
+            hash[pozicija] += hash[(pozicija +7) % 8];
+        }
     }
 
     return hash;
