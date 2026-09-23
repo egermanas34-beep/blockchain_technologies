@@ -13,7 +13,8 @@ using std::ofstream;
 using std::ispunct;
 
 
-void paverstiASCII(string t);
+int gautiBaitus(string t);
+
 int main() {
 SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     SetConsoleCP(CP_UTF8); // Nustatome konsolės įvesties koduotę į UTF-8
@@ -22,16 +23,17 @@ SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     cout<<" iveskite teksta:"<<endl;
     getline(cin, tekstas);
 
-   paverstiASCII(tekstas);
-    cout << endl;
-
+    cout << "Baitų skaičius: " << gautiBaitus(tekstas) << endl;
     return 0;
 }
-void paverstiASCII(string t)
+int gautiBaitus(string t)
 {
+    int visiBaitai = 0;
      for(int i = 0; i < t.length(); i++)
     {
-        char simbolis = t.at(i);
-        cout << int(simbolis) << " ";
+       unsigned char simbolis = t.at(i);
+        //cout << int(simbolis) * i << " ";
+        visiBaitai += int(simbolis) * i;
     }
+    return visiBaitai;
 }
