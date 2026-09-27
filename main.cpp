@@ -4,6 +4,7 @@
 #include <fstream>
 #include <array>
 #include <cstdint>
+#include <random>
 #include <windows.h>
 using std::string;
 using std::cin;
@@ -19,6 +20,9 @@ int gautiBaitus(string t);
 std::array<uint32_t, 8> gautiHash(string t);
 bool nuskaitytiIsFailo(string failoPavadinimas, string& tekstas);
 void isvedimas(std::array<uint32_t, 8> hash);
+void failuKurimas();
+
+
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     SetConsoleCP(CP_UTF8); // Nustatome konsolės įvesties koduotę į UTF-8
@@ -26,6 +30,15 @@ int main() {
     string tekstas;
     //cout<<" iveskite teksta:"<<endl;
    //getline(cin, tekstas);
+   cout<< "Ar norite sukurti naują failą su atsitiktiniu tekstu? (taip/ne): ";
+string pasirinkimas;
+    cin >> pasirinkimas;
+    if (pasirinkimas == "taip") {
+        failuKurimas();
+        cout << "Failas 'tekstas1000.txt', 'tekstas2000.txt' ir 'tekstas3000.txt' sukurti su atsitiktiniu tekstu." << endl;
+    } else {
+        cout << "Failas nebus sukurtas." << endl;
+    }
     string failoPavadinimas;
     cout << "Įveskite failo pavadinimą (pvz., tekstas.txt): ";
     cin >> failoPavadinimas;
@@ -103,4 +116,27 @@ void isvedimas(std::array<uint32_t, 8> hash)
         cout << std::hex << std::setw(8) << std::setfill('0') << h;
     }
     cout << endl;
+}
+void failuKurimas()
+{
+    std::mt19937 generator(12345); // Naudojame fiksuotą seed, kad rezultatai būtų atkuriami
+    ofstream failas("tekstas1000.txt");
+    std::uniform_int_distribution<int> ascii(32, 126);
+    for (int i = 0; i < 1000; i++) {
+        char simbolis = static_cast<char>(ascii(generator));
+        failas << simbolis;
+    }
+    failas.close();
+    ofstream failas2("tekstas2000.txt");
+    for (int i = 0; i < 2000; i++) {
+        char simbolis = static_cast<char>(ascii(generator));
+        failas2 << simbolis;
+    }
+    failas2.close();
+    ofstream failas3("tekstas3000.txt");
+    for (int i = 0; i < 3000; i++) {
+        char simbolis = static_cast<char>(ascii(generator));
+        failas3 << simbolis;
+    }
+    failas3.close();
 }
