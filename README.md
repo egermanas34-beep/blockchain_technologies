@@ -7,3 +7,6 @@ Atlikęs pirmuosius bandymus pastebėjau, kad šis pakeitimas neišsprendžia vi
 ### apie funkcija std::array<uint32_t, 8> gautiHash(string t)
 Pradinis šios funkcijos veikimo principas panašus į ankstesnės funkcijos: kiekvieno įvesties baito skaitinė reikšmė dauginama iš jo pozicijos. Tačiau šį kartą gauti rezultatai paskirstomi į aštuonis 32 bitų masyvo elementus. Tai leidžia išvengti anksčiau pastebėtos kolizijos tarp „ac“ ir „cb“, tačiau negarantuoja, kad kolizijų nebus tarp kitų įvesčių.
 Siekdamas toliau patobulinti algoritmą, nusprendžiau prie kiekvieno maišos elemento pridėti ankstesnio elemento reikšmę. Tokiu būdu kiekvienas naujas elementas priklauso ne tik nuo dabartinio įvesties baito, bet ir nuo ankstesnių skaičiavimų rezultatų. Šiuo pakeitimu siekiu geriau susieti maišos elementus ir sumažinti lengvai aptinkamų kolizijų skaičių.
+## Versija v0.11
+### Pradiniai pakeitimai
+Patobulinau koda, kad galima butu nuskaityti tekstinius failus, o ne tik ivesti teksta ranka. 
