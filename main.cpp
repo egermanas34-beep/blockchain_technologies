@@ -31,7 +31,7 @@ int main() {
     //cout<<" iveskite teksta:"<<endl;
    //getline(cin, tekstas);
    cout<< "Ar norite sukurti naują failą su atsitiktiniu tekstu? (taip/ne): ";
-string pasirinkimas;
+    string pasirinkimas;
     cin >> pasirinkimas;
     if (pasirinkimas == "taip") {
         failuKurimas();
@@ -44,6 +44,7 @@ string pasirinkimas;
     cin >> failoPavadinimas;
     if(nuskaitytiIsFailo(failoPavadinimas, tekstas))
     {
+        cout << "Tekstas nuskaitytas iš failo. Baitų skaičius: " << tekstas.size() << endl;
         cout << "Tekstas nuskaitytas iš failo." << endl;
     }
     else
