@@ -17,23 +17,22 @@ using std::ofstream;
 
 int gautiBaitus(string t);
 std::array<uint32_t, 8> gautiHash(string t);
+void nuskaitytiIsFailo(string failoPavadinimas, string& tekstas);
+void isvedimas(std::array<uint32_t, 8> hash);
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     SetConsoleCP(CP_UTF8); // Nustatome konsolės įvesties koduotę į UTF-8
 
     string tekstas;
-    cout<<" iveskite teksta:"<<endl;
-    getline(cin, tekstas);
+    //cout<<" iveskite teksta:"<<endl;
+    //getline(cin, tekstas);
 
-    
-    int baitai = gautiBaitus(tekstas);
-    cout << "Baitų skaičius: " << baitai << endl;
-    cout << std::hex << baitai << endl;
+    nuskaitytiIsFailo("tekstas.txt", tekstas);
+    //int baitai = gautiBaitus(tekstas);
+    //cout << "Baitų skaičius: " << baitai << endl;
+    //cout << std::hex << baitai << endl;
     auto hash = gautiHash(tekstas);
-    cout << "Hash: ";
-    for (const auto& h : hash) {
-        cout << std::hex <<std::setw(8) << std::setfill('0') << h << " ";
-    }
+    isvedimas(hash);
     return 0;
 }
 int gautiBaitus(string t)
@@ -64,4 +63,27 @@ std::array<uint32_t, 8> gautiHash(string t)
 
     return hash;
 
+}
+void nuskaitytiIsFailo(string failoPavadinimas, string& tekstas)
+{
+    ifstream failas(failoPavadinimas);
+    if (!failas) {
+        cout << "Nepavyko atidaryti failo: " << failoPavadinimas << endl;
+        return;
+    }
+
+    string eilute;
+    while (getline(failas, eilute)) {
+        tekstas += eilute + "\n"; // Pridedame naują eilutę
+    }
+
+    failas.close();
+}
+void isvedimas(std::array<uint32_t, 8> hash)
+{
+    cout << "Hash: ";
+    for (const auto& h : hash) {
+        cout << std::hex << std::setw(8) << std::setfill('0') << h;
+    }
+    cout << endl;
 }
