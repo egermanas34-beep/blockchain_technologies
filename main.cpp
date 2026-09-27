@@ -26,8 +26,10 @@ int main() {
     string tekstas;
     //cout<<" iveskite teksta:"<<endl;
    //getline(cin, tekstas);
-
-    if(nuskaitytiIsFailo("tekstas.txt", tekstas))
+    string failoPavadinimas;
+    cout << "Įveskite failo pavadinimą (pvz., tekstas.txt): ";
+    cin >> failoPavadinimas;
+    if(nuskaitytiIsFailo(failoPavadinimas, tekstas))
     {
         cout << "Tekstas nuskaitytas iš failo." << endl;
     }
