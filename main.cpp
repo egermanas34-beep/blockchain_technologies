@@ -24,10 +24,10 @@ int main() {
     SetConsoleCP(CP_UTF8); // Nustatome konsolės įvesties koduotę į UTF-8
 
     string tekstas;
-    //cout<<" iveskite teksta:"<<endl;
-    //getline(cin, tekstas);
+    cout<<" iveskite teksta:"<<endl;
+   getline(cin, tekstas);
 
-    nuskaitytiIsFailo("tekstas.txt", tekstas);
+    //nuskaitytiIsFailo("tekstas.txt", tekstas);
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
     //cout << std::hex << baitai << endl;
@@ -66,7 +66,7 @@ std::array<uint32_t, 8> gautiHash(string t)
 }
 void nuskaitytiIsFailo(string failoPavadinimas, string& tekstas)
 {
-    ifstream failas(failoPavadinimas);
+    ifstream failas(failoPavadinimas, std::ios::binary);
     if (!failas) {
         cout << "Nepavyko atidaryti failo: " << failoPavadinimas << endl;
         return;
