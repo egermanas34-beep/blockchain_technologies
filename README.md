@@ -74,3 +74,29 @@ Atlikus testus su praeitame eksperimente sukurtais failais gauname tokias jų he
 #### Išvados
 Atlikus testus matome, kad su bet kokio ilgio ir formato įvestimi gaunama fiksuoto 256 bitų ilgio maiša. Kadangi vienas HEX simbolis atitinka 4 bitus, 256 bitų maiša yra atvaizduojama 64 HEX simboliais. Visuose atliktuose testuose maišos ilgis buvo 64 simboliai, o pradiniai nuliai buvo išsaugomi.
 Taip pat patikrinta, kad įvedus tą patį tekstą Labas rankiniu būdu ir nuskaičius tokį patį tekstą iš failo, kai sutampa įvesties baitai, gaunama identiška maišos reikšmė. Tai parodo, kad maišos rezultatas nepriklauso nuo įvesties būdo.
+### 3 eksperimentas
+Šio eksperimento tikslas buvo patikrinti maišos funkcijos determinizmą, t. y. ar tokia pati įvestis visada pateikia tokią pačią maišos reikšmę.
+
+Pirmiausia buvo atliktas testas vieno programos paleidimo metu naudojant A–B–A seką. Iš pradžių apskaičiuota žodžio Labas maiša, tada žodžio Kebabas, o po to dar kartą žodžio Labas maiša.
+
+| Žodis   | Maiša (HEX) |
+|---------|------------------------------------------------------------------|
+| Labas   | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 |
+| Kebabas | 0000004b000001150000023b000003bf000005a9000007ef00000b1400000000 |
+| Labas   | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 |
+
+Matome, kad abiem atvejais žodis Labas pateikė identišką maišos reikšmę. Tai parodo, kad ankstesnis maišos skaičiavimas nepaveikia vėlesnių funkcijos kvietimų.
+
+Antroje eksperimento dalyje buvo patikrinta, ar tokia pati įvestis pateikia vienodą rezultatą atskirai paleidžiant programą iš naujo. Visais trimis paleidimais buvo naudojamas žodis Labas.
+
+| Kartas  | Žodis | Maiša (HEX) |
+|---------|-------|------------------------------------------------------------------|
+| Pirmas  | Labas | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 |
+| Antras  | Labas | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 |
+| Trečias | Labas | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 |
+
+Visais trimis atskirais programos paleidimais gauta identiška maišos reikšmė.
+
+#### Išvada
+
+Atlikti testai parodė, kad dabartinė maišos funkcijos versija yra deterministinė: tokia pati įvestis pateikia tokią pačią maišos reikšmę tiek pakartotinai skaičiuojant vieno programos paleidimo metu, tiek programą paleidžiant iš naujo. A–B–A testas taip pat neparodė tarp funkcijos kvietimų išliekančios būsenos.
