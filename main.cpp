@@ -120,25 +120,34 @@ int main() {
         cout << istrauka.size() << " baitų" << endl;
         
         auto hash = gautiHash(istrauka);
-        for(int j = 0; j < 1000; j++)
+        for(int j = 0; j < 5; j++)
         {
             auto start = std::chrono::high_resolution_clock::now();
-            hash = gautiHash(istrauka);
-         
+            for(int k = 0; k < 1000; k++)
+            {
+                hash = gautiHash(istrauka);
+            }
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double, std::milli> elapsed = end - start;
             cout << "Laikas: " << elapsed.count() << " ms" << endl;
         }
         
-        isvedimas(hash);
+            isvedimas(hash);
         }
         cout<< " Ištrauka iki " << eilutes << " eilutės: " << endl;
         cout << tekstas.size() << " baitų" << endl;
-        auto start = std::chrono::high_resolution_clock::now();
         auto hash = gautiHash(tekstas);
+        for(int j = 0; j < 5; j++)
+        {
+        auto start = std::chrono::high_resolution_clock::now();
+        for(int k = 0; k < 1000; k++)
+        {
+        hash = gautiHash(tekstas);
+        }
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double, std::milli> elapsed = end - start;
         cout << "Laikas: " << elapsed.count() << " ms" << endl;
+        }
         isvedimas(hash);
     }
     //int baitai = gautiBaitus(tekstas);
