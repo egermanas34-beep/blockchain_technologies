@@ -113,13 +113,33 @@ int main() {
         }
         int eilutes = eiluciuSkaicius(tekstas);
         cout << "Eilučių skaičius: " << eilutes << endl;
-        string istrauka = gautiIstrauka(tekstas, eilute);
-        cout<< "Ištrauka iki " << eilute << " eilutės: " << endl;
+        for(int i = 1; i <= eilutes; i=i*2)
+        {
+        string istrauka = gautiIstrauka(tekstas, i);
+        cout<< "Ištrauka iki " << i << " eilutės: " << endl;
         cout << istrauka.size() << " baitų" << endl;
+        
         auto hash = gautiHash(istrauka);
+        for(int j = 0; j < 1000; j++)
+        {
+            auto start = std::chrono::high_resolution_clock::now();
+            hash = gautiHash(istrauka);
+         
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed = end - start;
+            cout << "Laikas: " << elapsed.count() << " ms" << endl;
+        }
+        
         isvedimas(hash);
-        //auto hash = gautiHash(tekstas);
-        //isvedimas(hash);
+        }
+        cout<< " Ištrauka iki " << eilutes << " eilutės: " << endl;
+        cout << tekstas.size() << " baitų" << endl;
+        auto start = std::chrono::high_resolution_clock::now();
+        auto hash = gautiHash(tekstas);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> elapsed = end - start;
+        cout << "Laikas: " << elapsed.count() << " ms" << endl;
+        isvedimas(hash);
     }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
@@ -184,7 +204,7 @@ void isvedimas(std::array<uint32_t, 8> hash)
     for (const auto& h : hash) {
         cout << std::hex << std::setw(8) << std::setfill('0') << h;
     }
-    cout << endl;
+    cout <<std::dec<< endl;
 }
 void failuKurimas()
 {
