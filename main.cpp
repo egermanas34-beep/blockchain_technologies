@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <random>
 #include <limits>
+#include <chrono>
 #include <windows.h>
 using std::string;
 using std::cin;
@@ -22,21 +23,23 @@ std::array<uint32_t, 8> gautiHash(string t);
 bool nuskaitytiIsFailo(string failoPavadinimas, string& tekstas);
 void isvedimas(std::array<uint32_t, 8> hash);
 void failuKurimas();
-
+int eiluciuSkaicius(string & tekstas);
+string gautiIstrauka(string & tekstas, int kiekEiluciu);
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     SetConsoleCP(CP_UTF8); // Nustatome konsolės įvesties koduotę į UTF-8
 
     string tekstas;
-    //cout<<" iveskite teksta:"<<endl;
-   //getline(cin, tekstas);
+    int eilute = 1; //cia eilutes reikalingos darbui su konstitucija.txt
+    
    cout<<"Ka jus norite daryti?"<<endl;
    cout<<"1. Nuskaityti tekstą iš failo"<<endl;
    cout<<"2. Įvesti tekstą rankiniu būdu"<<endl;
    cout<<"3. Sukurti naują failą su atsitiktiniu tekstu"<<endl;
    cout<<"4. Patikrtinti determinizmą sekoje"<<endl;
    cout<<"5. Patikrinti determinizmą su vienodu tekstu"<<endl;
+   cout<<"6. Dirbti su konstitucija.txt"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -96,7 +99,57 @@ int main() {
         cout << "B =  " <<B<< endl;
         isvedimas(hashB);
     }
-  
+    if(rinktis == 6)
+    {
+        string failoPavadinimas = "konstitucija.txt";
+        if(nuskaitytiIsFailo(failoPavadinimas, tekstas))
+        {
+            cout << "Tekstas nuskaitytas iš failo. Baitų skaičius: " << tekstas.size() << endl;
+        }
+        else
+        {
+            cout << "Nepavyko nuskaityti teksto iš failo." << endl;
+            return 1; // Grąžiname klaidos kodą
+        }
+        int eilutes = eiluciuSkaicius(tekstas);
+        cout << "Eilučių skaičius: " << eilutes << endl;
+        for(int i = 1; i <= eilutes; i=i*2)
+        {
+        string istrauka = gautiIstrauka(tekstas, i);
+        cout<< "Ištrauka iki " << i << " eilutės: " << endl;
+        cout << istrauka.size() << " baitų" << endl;
+        
+        auto hash = gautiHash(istrauka);
+        for(int j = 0; j < 5; j++)
+        {
+            auto start = std::chrono::high_resolution_clock::now();
+            for(int k = 0; k < 1000; k++)
+            {
+                hash = gautiHash(istrauka);
+            }
+            auto end = std::chrono::high_resolution_clock::now();
+            std::chrono::duration<double, std::milli> elapsed = end - start;
+            cout << "Laikas: " << elapsed.count() << " ms" << endl;
+        }
+        
+            isvedimas(hash);
+        }
+        cout<< " Ištrauka iki " << eilutes << " eilutės: " << endl;
+        cout << tekstas.size() << " baitų" << endl;
+        auto hash = gautiHash(tekstas);
+        for(int j = 0; j < 5; j++)
+        {
+        auto start = std::chrono::high_resolution_clock::now();
+        for(int k = 0; k < 1000; k++)
+        {
+        hash = gautiHash(tekstas);
+        }
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::milli> elapsed = end - start;
+        cout << "Laikas: " << elapsed.count() << " ms" << endl;
+        }
+        isvedimas(hash);
+    }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
     //cout << std::hex << baitai << endl;
@@ -160,7 +213,7 @@ void isvedimas(std::array<uint32_t, 8> hash)
     for (const auto& h : hash) {
         cout << std::hex << std::setw(8) << std::setfill('0') << h;
     }
-    cout << endl;
+    cout <<std::dec<< endl;
 }
 void failuKurimas()
 {
@@ -184,4 +237,41 @@ void failuKurimas()
         failas3 << simbolis;
     }
     failas3.close();
+}
+int eiluciuSkaicius(string & tekstas)
+{
+    int eiluciuSkaicius = 0;
+
+    for (char simbolis : tekstas)
+    {
+        if (simbolis == '\n')
+        {
+            eiluciuSkaicius++;
+        }
+    }
+
+    if (!tekstas.empty() && tekstas.back() != '\n')
+    {
+        eiluciuSkaicius++;
+    }
+
+    
+    return eiluciuSkaicius;
+}
+string gautiIstrauka(string & tekstas, int kiekEiluciu)
+{
+    int eilutes = 0;
+
+    for (size_t i = 0; i < tekstas.size(); i++)
+    {
+        if (tekstas[i] == '\n')
+        {
+            eilutes++;
+
+            if (eilutes == kiekEiluciu)
+                return tekstas.substr(0, i + 1);
+        }
+    }
+
+    return tekstas;
 }
