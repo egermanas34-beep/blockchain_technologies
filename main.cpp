@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <random>
+#include <limits>
 #include <windows.h>
 using std::string;
 using std::cin;
@@ -55,6 +56,7 @@ int main() {
     }
    if(rinktis == 2)
     {
+        cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n'); // Išvalome įvesties srautą
         cout << "Įveskite tekstą:" << endl;
         getline(cin, tekstas);
     }

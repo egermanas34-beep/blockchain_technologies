@@ -45,3 +45,28 @@ Tekstas su lietuviškomis raidemis - Ąžuolas - simbilių skaičius jame yra 7,
 Atlikus pirmąjį eksperimentą nustatyta, kad programa geba apskaičiuoti maišas tuščiam failui, vieno baito failams, skirtingo dydžio ASCII failams ir UTF-8 tekstui su lietuviškomis raidėmis. Tuščio failo maišą sudaro vien nuliai. Vieno baito failų a.txt ir b.txt maišos skiriasi tik vienu šešioliktainiu skaitmeniu, arba dviem bitais.
 Pakeitus vieną baitą didesniuose failuose, gautos skirtingos maišos, tačiau pastebėta, kad pakeitimas failo pabaigoje paveikia tik dalį maišos. Tai rodo, kad dabartinėje algoritmo versijoje įvesties pakeitimai nepakankamai pasklinda po visą 256 bitų išvestį.
 Struktūruotų įvesčių bandymai parodė, kad simbolių tvarkos pakeitimas, tarpo pozicija ir papildomi naujos eilutės baitai gali pakeisti gaunamą maišą. UTF-8 bandyme tekstą Ąžuolas sudarė 7 simboliai ir 9 baitai, todėl patvirtinta, kad baitų skaičius nebūtinai sutampa su simbolių skaičiumi.
+
+## Versija v0.12
+### 2 eksperimentas
+Atlikus testus su praeitame eksperimente sukurtais failais gauname tokias jų hex ir maišos ilgių reikšmes:
+| Įvestis                      | HEX formatas                                                     | Maišos ilgis |
+|------------------------------|------------------------------------------------------------------|--------------|
+| Tuščia                       | 0000000000000000000000000000000000000000000000000000000000000000 | 64           |
+| Vienas baitas a              | 0000006100000000000000000000000000000000000000000000000000000000 | 64           |
+| Vienas baitas b              | 0000006200000000000000000000000000000000000000000000000000000000 | 64           |
+| 1000 ilgis                   | 004d99920c98cfe792ea6310c83d6e67846a7afefc544eb87107f8f9b327389d | 64           |
+| 1000 ilgis su pirmu pakeistu | 004d997b0c98c4ac92e79f8bc7c86ebe75ca85de8302341881bfb8191095e83d | 64           |
+| 2000 ilgis                   | 013163b7663026f925af072bf64b9feb77e2781cecafa4b3c39eec1652aabe78 | 64           |
+| pakeistas viduje             | 013163b76630779525d8e8370141860f651bec706e5117dba3803f5e6fe939f0 | 64           |
+| 3000 ilgis                   | 02c0b2ac5296c4d0770a1773dc2ce08977a19c8b05f5226ed42aedf7c64aafcf | 64           |
+| pakeistas paskutinis         | 02c0b2ac5296c4d0770a1773dc2ce08977a19c8b05f5226ed42aedf7c64cbf27 | 64           |
+| pasikartojantys a            | 000003ca000008b700000246000003ca000005af000007f500000a9c00000da4 | 64           |
+| ab                           | 0000006100000125000000000000000000000000000000000000000000000000 | 64           |
+| ba                           | 0000006200000124000000000000000000000000000000000000000000000000 | 64           |
+| tarpas pradžioje             | 00000020000000b8000001db0000036300000548000007fa0000000000000000 | 64           |
+| tarpas pabaigoje             | 0000004c0000010e00000234000003b8000005f7000006b70000000000000000 | 64           |
+| tekstas su eilute po juo     | 0000004c0000010e00000234000003b8000005f7000006450000068b00000000 | 64           |
+| be naujos eilutės            | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 | 64           |
+| Ąžuolas                      | 000004cf000001cc0000041b000007130000095c00000bf600000eea000011f2 | 64           |
+| Labas - ranka                | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 | 64           |
+| Labas - nuskaitant           | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 | 64           |
