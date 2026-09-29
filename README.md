@@ -120,16 +120,31 @@ Atlikti testai parodė, kad dabartinė maišos funkcijos versija yra determinist
 
 ### 4 eksperimentas
 
-| Eilučių skaičius | Baitu skaičius | Maiša(HEX)                                                       | Vidutinis laikas(ms \* 1000) |
-| ---------------- | -------------- | ---------------------------------------------------------------- | ---------------------------- |
-| 1                | 70             | 00005d660001ba010005a259000f98c500260aa100546a120059db1500a54fb5 | 0.79796                      |
-| 2                | 123            | 000101480007ce940028828d0081aba101bddbc3055d90130f1e26b027869f7a | 1.20338                      |
-| 4                | 205            | 00030e89001df53b00e184080580a27a1d78faed6d761a31c159584d95058c29 | 4,23952                      |
-| 8                | 362            | 000d6b4200c7d28d07f43a954a67e91861b1a92558a44abab8ef059582fa9378 | 2.19492                      |
-| 16               | 996            | 0066646f111720641609412a7a7dcc1347819cc8d4f182ed116b97afc94d56bd | 8.20568                      |
-| 32               | 1841           | 0150b282673416d1937cf0ada4ca27a9be4ee20f36a658e9871ba5370c74f054 | 18,21688                     |
-| 64               | 3712           | 0581a2164ea0dd0e85b61fbe572b0f722fe8ecc9aee87ed1769bd81b0bbafa32 | 20.4027                      |
-| 128              | 9155           | 213625ee98c6eef271c51e1c32e2ea4a6adb2b95070ed788127171fcd1d65c09 | 72.59696                     |
-| 256              | 20409          | a0bed7ec6bb3d1b03b93b60ec1a3f55f57da55fc36056ec431d46f449939c8c4 | 153.8694                     |
-| 512              | 47434          | 529adf1bfa425d0bda38fd5fb510a53327751a407cbaa7f5fa5d29ad3bd55927 | 378.6358                     |
-| 789              | 75595          | 75f90156b608fb2c2065f6c7a530e18f05d45c202cf0a86aac35db20498ba836 | 574.7552                     |
+Buvo pravestas eksperimentas apskaičiuoti kiek laiko užtrunka 1, 2, 4, 8, ir t.t. eilučių iš duoto tekstinio dokumento konstitucija.txt maišos generavimas. Apačioje esančioje lentelėje galite matyti eilučių skaičių, kiek į jas įėjo baitų, jų HEX formatą, vidutinį laiką milisekundėmis*1000 ir didžiausia su mažiausiu laiku irgi milisekundėmis*1000. Laikui apskaičiuoti buvo naudojama C++ biblioteka chrono bei ši funkcija:
+for(int j = 0; j < 5; j++)
+{
+auto start = std::chrono::high_resolution_clock::now();
+for(int k = 0; k < 1000; k++)
+{
+hash = gautiHash(istrauka);
+}
+auto end = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double, std::milli> elapsed = end - start;
+cout << "Laikas: " << elapsed.count() << " ms" << endl;
+}
+Eksperimento metu kiekvienai ištraukai atlikti 5 atskiri matavimai. Vieno matavimo metu maišos funkcija buvo iškviesta 1000 kartų taip apskaičiuojant vidutinį vienos maišos skaičiavimo laiką lentelėje rodomas laikas milisekundėmis\*1000. Kiekvienam įvesties dydžiui apskaičiuotas penkių matavimų vidurkis, mažiausia ir didžiausia reikšmė.
+| Eilučių skaičius | Baitu skaičius | Maiša(HEX) | Vidutinis laikas(ms \* 1000) | Did. laikas(ms) | Maž.laikas(ms) |
+| ---------------- | -------------- | ---------------------------------------------------------------- | ---------------------------- | ---------------------- | --------------------- |
+| 1 | 70 | 00005d660001ba010005a259000f98c500260aa100546a120059db1500a54fb5 | 0.79796 | 0.0010022 | 0.00000001 |
+| 2 | 123 | 000101480007ce940028828d0081aba101bddbc3055d90130f1e26b027869f7a | 1.20338 | .0019955 | 0.0010007 |
+| 4 | 205 | 00030e89001df53b00e184080580a27a1d78faed6d761a31c159584d95058c29 | 4.23952 | 0.0116019 | 0.00000001 |
+| 8 | 362 | 000d6b4200c7d28d07f43a954a67e91861b1a92558a44abab8ef059582fa9378 | 2.19492 | 0.0103427 | 0.00000001 |
+| 16 | 996 | 0066646f111720641609412a7a7dcc1347819cc8d4f182ed116b97afc94d56bd | 8.20568 | 0.0128488 | 0.0007749 |
+| 32 | 1841 | 0150b282673416d1937cf0ada4ca27a9be4ee20f36a658e9871ba5370c74f054 | 18.21688 | 0.023.6288 | 0.0135984 |
+| 64 | 3712 | 0581a2164ea0dd0e85b61fbe572b0f722fe8ecc9aee87ed1769bd81b0bbafa32 | 20.4027 | 0.037713 | 0.0191944 |
+| 128 | 9155 | 213625ee98c6eef271c51e1c32e2ea4a6adb2b95070ed788127171fcd1d65c09 | 72.59696 | 0.0833963 | 0.0553751 |
+| 256 | 20409 | a0bed7ec6bb3d1b03b93b60ec1a3f55f57da55fc36056ec431d46f449939c8c4 | 153.8694 | 0.156577 | 0.151717 |
+| 512 | 47434 | 529adf1bfa425d0bda38fd5fb510a53327751a407cbaa7f5fa5d29ad3bd55927 | 378.6358 | 0.387494 | 0.351329 |
+| 789 | 75595 | 75f90156b608fb2c2065f6c7a530e18f05d45c202cf0a86aac35db20498ba836 | 574.7552 | 0.601501 | 0.546858 |
+
+![Maišos skaičiavimo laiko priklausomybė nuo įvesties dydžio](images/hash-lentele.jpg)
