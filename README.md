@@ -49,7 +49,7 @@ Struktūruotų įvesčių bandymai parodė, kad simbolių tvarkos pakeitimas, ta
 ## Versija v0.12
 ### 2 eksperimentas
 Atlikus testus su praeitame eksperimente sukurtais failais gauname tokias jų hex ir maišos ilgių reikšmes:
-| Įvestis                      | HEX formatas                                                     | Maišos ilgis |
+| Įvestis                      | Maiša(HEX)                                                     | Maišos ilgis |
 |------------------------------|------------------------------------------------------------------|--------------|
 | Tuščia                       | 0000000000000000000000000000000000000000000000000000000000000000 | 64           |
 | Vienas baitas a              | 0000006100000000000000000000000000000000000000000000000000000000 | 64           |
@@ -72,4 +72,5 @@ Atlikus testus su praeitame eksperimente sukurtais failais gauname tokias jų he
 | Labas - nuskaitant           | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 | 64           |
 
 #### Išvados
-Matome, kad su bet kuria įvestimi, hex formatas lieka tokio pat ilgio, nepriklausomai nuo įvesties ilgio ar formato. Taip pat įvedant tą patį tekstą ranka bei nuskaitant jį iš failo hex reikšmė yra tokia pati.
+Atlikus testus matome, kad su bet kokio ilgio ir formato įvestimi gaunama fiksuoto 256 bitų ilgio maiša. Kadangi vienas HEX simbolis atitinka 4 bitus, 256 bitų maiša yra atvaizduojama 64 HEX simboliais. Visuose atliktuose testuose maišos ilgis buvo 64 simboliai, o pradiniai nuliai buvo išsaugomi.
+Taip pat patikrinta, kad įvedus tą patį tekstą Labas rankiniu būdu ir nuskaičius tokį patį tekstą iš failo, kai sutampa įvesties baitai, gaunama identiška maišos reikšmė. Tai parodo, kad maišos rezultatas nepriklauso nuo įvesties būdo.
