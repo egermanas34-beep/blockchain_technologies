@@ -35,6 +35,8 @@ int main() {
    cout<<"1. Nuskaityti tekstą iš failo"<<endl;
    cout<<"2. Įvesti tekstą rankiniu būdu"<<endl;
    cout<<"3. Sukurti naują failą su atsitiktiniu tekstu"<<endl;
+   cout<<"4. Patikrtinti determinizmą sekoje"<<endl;
+   cout<<"5. Patikrinti determinizmą su vienodu tekstu"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -53,24 +55,52 @@ int main() {
             cout << "Nepavyko nuskaityti teksto iš failo." << endl;
             return 1; // Grąžiname klaidos kodą
         }
+        auto hash = gautiHash(tekstas);
+    isvedimas(hash);
     }
    if(rinktis == 2)
     {
         cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n'); // Išvalome įvesties srautą
         cout << "Įveskite tekstą:" << endl;
         getline(cin, tekstas);
+        auto hash = gautiHash(tekstas);
+        isvedimas(hash);
     }
     if(rinktis == 3)
     {
         failuKurimas();
         cout << "Failas 'tekstas1000.txt', 'tekstas2000.txt' ir 'tekstas3000.txt' sukurti su atsitiktiniu tekstu." << endl;
     }
+    if(rinktis == 4)
+    {
+        string A = "Labas";
+        string B = "Kebabas";
+        auto hashA = gautiHash(A);
+        auto hashB = gautiHash(B);
+        cout << "A =  " <<A<< endl;
+        isvedimas(hashA);
+        cout << "B =  " <<B<< endl;
+        isvedimas(hashB);
+        auto hashA2 = gautiHash(A);
+        cout << "A = " <<A<< endl;
+        isvedimas(hashA2);
+    }
+    if(rinktis == 5)
+    {
+        string A = "Labas";
+        string B = "Labas";
+        auto hashA = gautiHash(A);
+        auto hashB = gautiHash(B);
+        cout << "A =  " <<A<< endl;
+        isvedimas(hashA);
+        cout << "B =  " <<B<< endl;
+        isvedimas(hashB);
+    }
   
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
     //cout << std::hex << baitai << endl;
-    auto hash = gautiHash(tekstas);
-    isvedimas(hash);
+    
     return 0;
 }
 int gautiBaitus(string t)
