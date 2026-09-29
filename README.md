@@ -70,3 +70,6 @@ Atlikus testus su praeitame eksperimente sukurtais failais gauname tokias jų he
 | Ąžuolas                      | 000004cf000001cc0000041b000007130000095c00000bf600000eea000011f2 | 64           |
 | Labas - ranka                | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 | 64           |
 | Labas - nuskaitant           | 0000004c0000010e00000234000003b8000005f7000000000000000000000000 | 64           |
+
+#### Išvados
+Matome, kad su bet kuria įvestimi, hex formatas lieka tokio pat ilgio, nepriklausomai nuo įvesties ilgio ar formato. Taip pat įvedant tą patį tekstą ranka bei nuskaitant jį iš failo hex reikšmė yra tokia pati.
