@@ -147,4 +147,6 @@ Eksperimento metu kiekvienai ištraukai atlikti 5 atskiri matavimai. Vieno matav
 | 512 | 47434 | 529adf1bfa425d0bda38fd5fb510a53327751a407cbaa7f5fa5d29ad3bd55927 | 378.6358 | 0.387494 | 0.351329 |
 | 789 | 75595 | 75f90156b608fb2c2065f6c7a530e18f05d45c202cf0a86aac35db20498ba836 | 574.7552 | 0.601501 | 0.546858 |
 
+Žemiau galite matyti laiko priklausomybės nuo baitų dydžio lentelę.
 ![Maišos skaičiavimo laiko priklausomybė nuo įvesties dydžio](images/hash-lentele.jpg)
+Matome, kad laikas didėjant baitų skaičiui irgi didėja, tačiau 8 eilučių laiko matavime matome anomaliją, nes vidutinis laikas vos ne dukart mažesnis negu 4 eilučių matavime. Visuose kituose matavimuose laiko tendencija išlieka tokia pati ir didėja.
