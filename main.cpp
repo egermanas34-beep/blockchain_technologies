@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <random>
 #include <limits>
+#include <chrono>
 #include <windows.h>
 using std::string;
 using std::cin;
@@ -23,7 +24,7 @@ bool nuskaitytiIsFailo(string failoPavadinimas, string& tekstas);
 void isvedimas(std::array<uint32_t, 8> hash);
 void failuKurimas();
 int eiluciuSkaicius(string & tekstas);
-string gautiIstrauka(string & tekstas, int eilute);
+string gautiIstrauka(string & tekstas, int kiekEiluciu);
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
@@ -112,6 +113,11 @@ int main() {
         }
         int eilutes = eiluciuSkaicius(tekstas);
         cout << "Eilučių skaičius: " << eilutes << endl;
+        string istrauka = gautiIstrauka(tekstas, eilute);
+        cout<< "Ištrauka iki " << eilute << " eilutės: " << endl;
+        cout << istrauka.size() << " baitų" << endl;
+        auto hash = gautiHash(istrauka);
+        isvedimas(hash);
         //auto hash = gautiHash(tekstas);
         //isvedimas(hash);
     }
@@ -222,4 +228,21 @@ int eiluciuSkaicius(string & tekstas)
 
     
     return eiluciuSkaicius;
+}
+string gautiIstrauka(string & tekstas, int kiekEiluciu)
+{
+    int eilutes = 0;
+
+    for (size_t i = 0; i < tekstas.size(); i++)
+    {
+        if (tekstas[i] == '\n')
+        {
+            eilutes++;
+
+            if (eilutes == kiekEiluciu)
+                return tekstas.substr(0, i + 1);
+        }
+    }
+
+    return tekstas;
 }
