@@ -22,21 +22,23 @@ std::array<uint32_t, 8> gautiHash(string t);
 bool nuskaitytiIsFailo(string failoPavadinimas, string& tekstas);
 void isvedimas(std::array<uint32_t, 8> hash);
 void failuKurimas();
-
+int eiluciuSkaicius(string & tekstas);
+string gautiIstrauka(string & tekstas, int eilute);
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
     SetConsoleCP(CP_UTF8); // Nustatome konsolės įvesties koduotę į UTF-8
 
     string tekstas;
-    //cout<<" iveskite teksta:"<<endl;
-   //getline(cin, tekstas);
+    int eilute = 1; //cia eilutes reikalingos darbui su konstitucija.txt
+    
    cout<<"Ka jus norite daryti?"<<endl;
    cout<<"1. Nuskaityti tekstą iš failo"<<endl;
    cout<<"2. Įvesti tekstą rankiniu būdu"<<endl;
    cout<<"3. Sukurti naują failą su atsitiktiniu tekstu"<<endl;
    cout<<"4. Patikrtinti determinizmą sekoje"<<endl;
    cout<<"5. Patikrinti determinizmą su vienodu tekstu"<<endl;
+   cout<<"6. Dirbti su konstitucija.txt"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -96,7 +98,23 @@ int main() {
         cout << "B =  " <<B<< endl;
         isvedimas(hashB);
     }
-  
+    if(rinktis == 6)
+    {
+        string failoPavadinimas = "konstitucija.txt";
+        if(nuskaitytiIsFailo(failoPavadinimas, tekstas))
+        {
+            cout << "Tekstas nuskaitytas iš failo. Baitų skaičius: " << tekstas.size() << endl;
+        }
+        else
+        {
+            cout << "Nepavyko nuskaityti teksto iš failo." << endl;
+            return 1; // Grąžiname klaidos kodą
+        }
+        int eilutes = eiluciuSkaicius(tekstas);
+        cout << "Eilučių skaičius: " << eilutes << endl;
+        //auto hash = gautiHash(tekstas);
+        //isvedimas(hash);
+    }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
     //cout << std::hex << baitai << endl;
@@ -184,4 +202,24 @@ void failuKurimas()
         failas3 << simbolis;
     }
     failas3.close();
+}
+int eiluciuSkaicius(string & tekstas)
+{
+    int eiluciuSkaicius = 0;
+
+    for (char simbolis : tekstas)
+    {
+        if (simbolis == '\n')
+        {
+            eiluciuSkaicius++;
+        }
+    }
+
+    if (!tekstas.empty() && tekstas.back() != '\n')
+    {
+        eiluciuSkaicius++;
+    }
+
+    
+    return eiluciuSkaicius;
 }
