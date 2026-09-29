@@ -5,6 +5,7 @@
 #include <array>
 #include <cstdint>
 #include <random>
+#include <limits>
 #include <windows.h>
 using std::string;
 using std::cin;
@@ -30,28 +31,41 @@ int main() {
     string tekstas;
     //cout<<" iveskite teksta:"<<endl;
    //getline(cin, tekstas);
-   cout<< "Ar norite sukurti naują failą su atsitiktiniu tekstu? (taip/ne): ";
-    string pasirinkimas;
-    cin >> pasirinkimas;
-    if (pasirinkimas == "taip") {
+   cout<<"Ka jus norite daryti?"<<endl;
+   cout<<"1. Nuskaityti tekstą iš failo"<<endl;
+   cout<<"2. Įvesti tekstą rankiniu būdu"<<endl;
+   cout<<"3. Sukurti naują failą su atsitiktiniu tekstu"<<endl;
+   int rinktis;
+   cin>>rinktis;
+    if(rinktis == 1)
+    {
+        system("powershell ls *.txt");
+        cout << "Įveskite failo pavadinimą iš sąrašo (pvz., tekstas.txt): ";
+        
+        string failoPavadinimas;
+        cin >> failoPavadinimas;
+        if(nuskaitytiIsFailo(failoPavadinimas, tekstas))
+        {
+            cout << "Tekstas nuskaitytas iš failo. Baitų skaičius: " << tekstas.size() << endl;
+        }
+        else
+        {
+            cout << "Nepavyko nuskaityti teksto iš failo." << endl;
+            return 1; // Grąžiname klaidos kodą
+        }
+    }
+   if(rinktis == 2)
+    {
+        cin.ignore((std::numeric_limits<std::streamsize>::max)(), '\n'); // Išvalome įvesties srautą
+        cout << "Įveskite tekstą:" << endl;
+        getline(cin, tekstas);
+    }
+    if(rinktis == 3)
+    {
         failuKurimas();
         cout << "Failas 'tekstas1000.txt', 'tekstas2000.txt' ir 'tekstas3000.txt' sukurti su atsitiktiniu tekstu." << endl;
-    } else {
-        cout << "Failas nebus sukurtas." << endl;
     }
-    string failoPavadinimas;
-    cout << "Įveskite failo pavadinimą (pvz., tekstas.txt): ";
-    cin >> failoPavadinimas;
-    if(nuskaitytiIsFailo(failoPavadinimas, tekstas))
-    {
-        cout << "Tekstas nuskaitytas iš failo. Baitų skaičius: " << tekstas.size() << endl;
-        cout << "Tekstas nuskaitytas iš failo." << endl;
-    }
-    else
-    {
-        cout << "Nepavyko nuskaityti teksto iš failo." << endl;
-        return 1; // Grąžiname klaidos kodą
-    }
+  
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
     //cout << std::hex << baitai << endl;
