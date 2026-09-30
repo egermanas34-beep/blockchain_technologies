@@ -25,7 +25,7 @@ void isvedimas(std::array<uint32_t, 8> hash);
 void failuKurimas();
 int eiluciuSkaicius(string & tekstas);
 string gautiIstrauka(string & tekstas, int kiekEiluciu);
-string generuotiASCII(int ilgis);
+string generuotiASCII(int ilgis, std::mt19937& generatorius);
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
@@ -41,6 +41,7 @@ int main() {
    cout<<"4. Patikrtinti determinizmą sekoje"<<endl;
    cout<<"5. Patikrinti determinizmą su vienodu tekstu"<<endl;
    cout<<"6. Dirbti su konstitucija.txt"<<endl;
+   cout<<"7. Tikrinti kolizija su atsitiktiniu tekstu"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -150,6 +151,31 @@ int main() {
         cout << "Laikas: " << elapsed.count() << " ms" << endl;
         }
         isvedimas(hash);
+    }
+    if(rinktis == 7)
+    {
+        cout<< "Tikriname kolizijas su atsitiktiniu tekstu..." << endl;
+        const int poruSkaicius = 100000;
+        int kolizijuSkaicius = 0;
+        const int ilgis = 1000;
+        for(int i = 0; i < poruSkaicius; i++)
+        { 
+            std::mt19937 generatorius(12345);
+            string A = generuotiASCII(ilgis, generatorius);
+            string B = generuotiASCII(ilgis, generatorius);
+
+            while(A == B) // Užtikriname, kad A ir B būtų skirtingi
+            {
+                B = generuotiASCII(ilgis, generatorius);
+            }
+            auto hashA = gautiHash(A);
+            auto hashB = gautiHash(B);
+            if(hashA == hashB)
+            {
+                kolizijuSkaicius++;
+            }
+        }
+        cout << "Iš " << poruSkaicius << " porų, kolizijų skaičius: " << kolizijuSkaicius << endl;
     }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
@@ -276,9 +302,9 @@ string gautiIstrauka(string & tekstas, int kiekEiluciu)
 
     return tekstas;
 }
-string generuotiASCII(int ilgis)
+string generuotiASCII(int ilgis, std::mt19937& generatorius)
 {
-    std::mt19937 generatorius(12345); // Naudojame fiksuotą seed, kad rezultatai būtų atkuriami
+    // Naudojame fiksuotą seed, kad rezultatai būtų atkuriami
     std::uniform_int_distribution<int> dist(0, abecele.length() - 1); // ASCII simbolių diapazonas
     string tekstas;
     for (int i = 0; i < ilgis; i++)
