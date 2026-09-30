@@ -46,6 +46,7 @@ int main() {
    cout<<"6. Dirbti su konstitucija.txt"<<endl;
    cout<<"7. Tikrinti kolizija su atsitiktiniu tekstu poromis"<<endl;
    cout<<"8. Tikrinti kolizija su atsitiktiniu tekstu globaliai"<<endl;
+   cout<<"9. Tikrinti kolizija strukturuotu tekstu"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -230,6 +231,24 @@ int main() {
         
         
         cout << "Iš " << poruSkaicius << " porų, kolizijų skaičius: " << kolizijuSkaicius << endl;
+    }
+    if(rinktis == 9)
+    { 
+        string A1 = "abcdefghij";
+        string B1 = "jihgfedcba";
+
+        string A2 = "ababababab";
+        string B2 = "bababababa";
+
+        string A3 = "aaaaaaaaaa";
+        string B3 = "bbbbbbbbbb";
+        string tekstai[6] = {A1, B1, A2, B2, A3, B3};
+        for (int i = 0; i < 6; i++)
+        {
+            auto hash = gautiHash(tekstai[i]);
+            cout << "Tekstas: " << tekstai[i] << endl;
+            isvedimas(hash);
+        }
     }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;

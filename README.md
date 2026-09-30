@@ -170,3 +170,9 @@ Antroje eksperimento dalyje buvo tikrinamos ne tik kiekvienos poros dvi maišos 
 | 500 | 0 |
 | 1000 | 0 |
 Matome, kad ir pirmu, poriniame, ir antru, viso rinkinio tikrinimo, atveju pavyko išvengti kolizijų, tačiau tai dar neįrodo kriptografinio saugumo, nes 256 bitų maišos atveju atsitiktinės kolizijos tikimybė labai maža, todėl greičiausiai eksperimento metu jų ir neaptikau.
+Taip pat buvo patikrinta strukturuoti įvesčių rinkiniai - tekstas parašytas išvirkščiai ir pasikartojančiai. Tačiau ir šio bandymo metu nebuvo aptikta kolizijų.
+| Įvestis A | Įvestis B | Hash A == Hash B |
+|---|---|---|
+| `abcdefghij` | `jihgfedcba` | Ne |
+| `ababababab` | `bababababa` | Ne |
+| `aaaaaaaaaa` | `bbbbbbbbbb` | Ne |
