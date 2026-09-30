@@ -16,7 +16,7 @@ using std::cout;
 using std::endl;
 using std::ofstream;
 
-
+const string abecele = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 int gautiBaitus(string t);
 std::array<uint32_t, 8> gautiHash(string t);
@@ -25,6 +25,7 @@ void isvedimas(std::array<uint32_t, 8> hash);
 void failuKurimas();
 int eiluciuSkaicius(string & tekstas);
 string gautiIstrauka(string & tekstas, int kiekEiluciu);
+string generuotiASCII(int ilgis);
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
@@ -273,5 +274,16 @@ string gautiIstrauka(string & tekstas, int kiekEiluciu)
         }
     }
 
+    return tekstas;
+}
+string generuotiASCII(int ilgis)
+{
+    std::mt19937 generatorius(12345); // Naudojame fiksuotą seed, kad rezultatai būtų atkuriami
+    std::uniform_int_distribution<int> dist(0, abecele.length() - 1); // ASCII simbolių diapazonas
+    string tekstas;
+    for (int i = 0; i < ilgis; i++)
+    {
+        tekstas += abecele[dist(generatorius)];
+    }
     return tekstas;
 }
