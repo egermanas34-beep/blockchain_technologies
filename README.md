@@ -314,3 +314,60 @@ Eksperimentai tik parodo, kaip veikia mano algoritmas duotuose eksperimentuose.
 #### DI naudojimas
 
 Pradinė v0.1 algoritmo idėja ir pagrindinė realizacija buvo kuriama savarankiškai. Vėlesniuose darbo etapuose DI buvo naudojamas kaip pagalbinė priemuonė aiškinantis užduoties smulkmenas, tokias kaip galimus ekperimento realizavimo būdus, C++ kalbos konstrukcijas. DI pateikti pasiūlymai buvo peržiūrimi, pritaikomi arba atmetami pagal projekto reikalavimus ir asmeninį požiūrį.
+
+## versija v.2
+
+Šioje versijoje buvo naudotas dirbtinis intelektas tam, kad pagerintų mano sukurtą maišos algoritmą. Štai jo pasiūlymai, kai kuriuos aš priėmiau, kai kuriuos atmečiau:
+| DI pasiūlymas | Sprendimas | Priežastis |
+|---|---|---|
+| Pradinę hash būseną nustatyti ne nuliais | Priimtas | Trumpoms įvestims sumažina nenaudojamų nulinių sričių problemą |
+| Naudoti XOR, sudėtį ir bitų rotaciją | Priimtas | Siekiama geresnio bitų pasklidimo |
+| Vienu baitu keisti kelis hash elementus | Priimtas | Gerina lavinos efektą |
+| Atlikti papildomus galutinius maišymo raundus | Priimtas | Leidžia pokyčiui pasklisti po visus 256 bitus |
+| Naudoti atsitiktinį `seed` pačioje hash funkcijoje | Atmestas | Sugadintų determinizmą |
+| Pakeisti savo funkciją į SHA-256 | Atmestas | Užduoties tikslas – tobulinti savo algoritmą, o ne jį pakeisti standartine funkcija |
+| Automatiškai pridėti `salt` pačioje `gautiHash()` | Atmestas | Druska yra papildoma įvestis ir neturėtų keisti pagrindinės deterministinės hash funkcijos |
+
+### Determinizmas
+
+V0.2 versijoje pakartotinai atliktas A–B–A testas, naudojant įvestis „Labas“, „Kebabas“ ir dar kartą „Labas“. Abiem „Labas“ atvejais gauta identiška maišos reikšmė, todėl funkcija išliko deterministinė ir tarp atskirų maišos funkcijos kvietimų neišlieka rezultatą keičianti būsena.
+![v0.2 determinizmas](images/determinizmas.png)
+
+### Lavinos efekto palyginimas
+
+Pakartojus lavinos efekto eksperimentą su v0.2 versija buvo gauti šie rezultatai:
+
+![v0.2 lavinos efekto rezultatai](images/lavina.png)
+
+Lyginant su ankstesne versija, rezultatai reikšmingai pagerėjo.
+Ankstesnėje versijoje vidutinis bitų skirtumas siekė apie 7–21 %,
+o v0.2 versijoje visiems tirtiems įvesties ilgiams jis yra apie 50 %.
+HEX skirtumas padidėjo nuo maždaug 13–40 % iki maždaug 93,7 %.
+
+Taigi DI pasiūlyti papildomi maišymo veiksmai reikšmingai pagerino
+lavinos efektą. Vis dėlto šis rezultatas savaime neįrodo
+kriptografinio algoritmo saugumo.
+
+### Kolizijos patikrinimas
+
+Pakartojus kolizijų eksperimentus su v0.2 algoritmo versija, tiek tikrinant atsitiktinai sugeneruotų tekstų poras, tiek ieškant pasikartojančių maišos reikšmių visame sugeneruotų įvesčių rinkinyje, kolizijų nebuvo aptikta. Taigi kolizijų skaičius, kaip ir ankstesnėje algoritmo versijoje, išliko 0. Nors DI pasiūlyti pakeitimai reikšmingai pagerino lavinos efektą, pagal šį eksperimentą kolizijų rodiklis nepasikeitė. Svarbu pabrėžti, kad 0 aptiktų kolizijų neįrodo, jog algoritmas yra atsparus kolizijoms ar kriptografiškai saugus – buvo patikrinta tik ribota galimų įvesčių dalis.
+
+### v0.2 algoritmo veikimo principas
+
+v0.2 versijoje buvo patobulintas pradinis maišos algoritmas, siekiant pagerinti lavinos efektą.
+
+Maiša vis dar sudaryta iš 8 `uint32_t` reikšmių, todėl bendras jos ilgis yra 256 bitai, o išvestis – 64 HEX simboliai.
+
+Pagrindiniai pakeitimai:
+
+- vietoje nulinių pradinių reikšmių naudojamos skirtingos 32 bitų pradinės reikšmės;
+- naudojamos XOR, sudėties ir bitų rotacijos operacijos;
+- vienas įvesties baitas veikia kelis skirtingus maišos elementus;
+- į maišymą įtraukiama baito pozicija ir įvesties ilgis;
+- po visos įvesties apdorojimo atliekami papildomi galutinio maišymo raundai.
+
+Šių pakeitimų tikslas – paskleisti vieno simbolio pakeitimo įtaką po kuo didesnę 256 bitų maišos dalį.
+
+Atlikus lavinos efekto testą, v0.2 versijoje vidutinis bitų skirtumas siekė apie 50 %, o HEX skirtumas – apie 93,7 %. Ankstesnėje versijoje šie rodikliai buvo gerokai mažesni.
+
+Nors rezultatai pagerėjo, tai neįrodo kriptografinio saugumo – v0.2 vis dar yra mokomoji maišos funkcija.
