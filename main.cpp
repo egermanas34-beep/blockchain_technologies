@@ -54,6 +54,7 @@ int main() {
    cout<<"8. Tikrinti kolizija su atsitiktiniu tekstu globaliai"<<endl;
    cout<<"9. Tikrinti kolizija strukturuotu tekstu"<<endl;
    cout<<"10. Tikrinti lavinos efekta"<<endl;
+   cout<<"11. Tikrinti be druskos"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -306,6 +307,32 @@ int main() {
             cout << "Min (bitai): " << minBitai << endl;
             cout << "Max (bitai): " << maxBitai << endl;
         }
+    }
+    if(rinktis == 11)
+    {
+        string tikslas = "3014";
+        auto hashTikslas = gautiHash(tikslas);
+        int bandymai = 0;
+        int sutapimai = 0;
+        std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
+        for(int i=0; i<10000; i++)
+        {
+            std::ostringstream ss;
+            ss << std::setw(4) << std::setfill('0') << i; // Užpildome nulius iki 4 skaitmenų
+            string testas = ss.str();
+            auto hashTestas = gautiHash(testas);
+            bandymai++;
+            if(hashTestas == hashTikslas)
+            {
+                cout << "Rastas atitikmuo: " << testas << endl;
+                sutapimai++;
+            }
+        }
+        std::chrono::high_resolution_clock::time_point end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        cout << "Bandymų skaičius: " << bandymai << endl;
+        cout << "Sutapimų skaičius: " << sutapimai << endl;
+        cout << "Trukmė: " << duration.count() << " ms" << endl;
     }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
