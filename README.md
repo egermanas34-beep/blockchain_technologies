@@ -200,3 +200,33 @@ Mažiausias užfiksuotas bitų skirtumas buvo apie 0,4%, tai reiškia, kad kai k
 Maksimalios reikšmės ilgesnėms įvestims kai kuriais atvejais priartėjo prie orientacinių reikšmių. Pavyzdžiui, 1000 simbolių įvestims didžiausias HEX skirtumas siekė 94%, o bitų skirtumas – 54%. Tačiau pavieniai geri rezultatai nepakeičia bendros tendencijos, nes vidutinės reikšmės išlieka gerokai mažesnės už orientacines.
 Todėl galima teigti, kad dabartinė maišos funkcijos versija turi silpną lavinos efektą, nors ilgėjant įvesčiai jis pastebimai gerėja.
 Geras lavinos efektas savaime neįrodo atsparumo kolizijoms. Funkcija teoriškai galėtų stipriai pakeisti išvestį pakeitus vieną simbolį, tačiau vis tiek turėti lengvai randamų skirtingų įvesčių su vienoda maiša. Tokias silpnybes geriau atskleidžia 5 eksperimente atliktas kolizijų tikrinimas.
+
+### 7 eksperimentas
+
+#### Paieška be druskos
+
+Pirmiausia buvo apskaičiuota pasirinktos įvesties 3014 maišos reikšmė. Po to programa iš eilės sugeneravo visus kandidatus nuo 0000 iki 9999, apskaičiavo kiekvieno kandidato maišą ir palygino ją su tiksline maiša. Programa buvo vykdoma per visą kandidatų rinkinį net ir radus pirmą sutapimą, kad būtų galima aptikti visus kandidatus, turinčius tokią pačią maišos reikšmę.
+
+#### Paieška su druska
+
+Antroje eksperimento dalyje prie įvesties buvo pridėta vieša druska: H(input || salt)
+Druska buvo sugeneruota naudojant std::mt19937 generatorių su pradine reikšme(seed) 12345. Naudota 8 ASCII simbolių druska iš šios abėcėlės:
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+Kadangi naudojami ASCII simboliai, vienas druskos simbolis atitinka vieną baitą.
+Tikslinei įvesčiai buvo skaičiuojama:
+H("3014" || salt)
+Kadangi druska yra vieša, tikrinant kandidatus buvo galima apskaičiuoti:
+H(kandidatas || salt)
+visiems kandidatams nuo 0000 iki 9999.
+Gauti rezultatai:
+| Režimas | Bandymai | Sutapimai | Laikas(ms) |
+|---------|----------|-----------|------------|
+| be salt | 10000 | 1 | 18 |
+| su salt | 10000 | 1 | 6 |
+
+#### Slaptas atsitiktinumas
+
+Trečiuoju atveju nagrinėjama konstrukcija: H(input || r), kur r yra atsitiktinė, nežinoma reikšmė.
+Jeigu r yra nežinoma, tai neužtenka išbandyti 10000 galimų įvesčių, reikėtų spėti ir pačią r reikšmę, o dėl to spėjimo diapazonas labai padidėtų.
+Pavyzdžiui, jeigu r reikšmė yra sudaryta iš 8 simbolių ir kiekvienas iš jų yra pasirenkamas iš 62 simbolių abėcėlės, tai galimų r reikšmių yra 62^8. Todėl pradinį 10000 galimų įvesčių skaičių reiktų dauginti iš galimų r reikšmių skaičiaus.
+Vėliau atskleidus r galima perskaičiuoti H(input || r) ir patikrinti, ar rezultatas sutampa su anksčiau paskelbta maiša.
