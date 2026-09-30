@@ -150,3 +150,29 @@ Eksperimento metu kiekvienai ištraukai atlikti 5 atskiri matavimai. Vieno matav
 Žemiau galite matyti laiko priklausomybės nuo baitų dydžio lentelę.
 ![Maišos skaičiavimo laiko priklausomybė nuo įvesties dydžio](images/hash-lentele.jpg)
 Matome, kad laikas didėjant baitų skaičiui irgi didėja, tačiau 8 eilučių laiko matavime matome anomaliją, nes vidutinis laikas vos ne dukart mažesnis negu 4 eilučių matavime. Visuose kituose matavimuose laiko tendencija išlieka tokia pati ir didėja.
+
+### 5 eksperimentas
+
+Pridėta funkcija generuoti atsitiktinius ASCII koduoties tekstus pagal nurodyta ilgi ir fiksuota seed reikšmę (pas mane 12345). Naudota abėcėlė : "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; Pirmoje eksperimento dalyje kiekvienam ilgiui buvo sugeneruota po 100000 skirtingų tekstų porų ir palygintos kiekvienos maišos reikšmės.
+
+| Ilgis | Kolizijų skaičius |
+| ----- | ----------------- |
+| 10    | 0                 |
+| 100   | 0                 |
+| 500   | 0                 |
+| 1000  | 0                 |
+
+Antroje eksperimento dalyje buvo tikrinamos ne tik kiekvienos poros dvi maišos reikšmės, bet ir ieškoma pasikartojančių maišos reikšmių tarp visų konkretaus ilgio sugeneruotų įvesčių, kurių skaičius irgi buvo 100000, naudojant unordered_map.
+| Ilgis | Kolizijų skaičius |
+| ----- | ----------------- |
+| 10 | 0 |
+| 100 | 0 |
+| 500 | 0 |
+| 1000 | 0 |
+Matome, kad ir pirmu, poriniame, ir antru, viso rinkinio tikrinimo, atveju pavyko išvengti kolizijų, tačiau tai dar neįrodo kriptografinio saugumo, nes 256 bitų maišos atveju atsitiktinės kolizijos tikimybė labai maža, todėl greičiausiai eksperimento metu jų ir neaptikau.
+Taip pat buvo patikrinta strukturuoti įvesčių rinkiniai - tekstas parašytas išvirkščiai ir pasikartojančiai. Tačiau ir šio bandymo metu nebuvo aptikta kolizijų.
+| Įvestis A | Įvestis B | Hash A == Hash B |
+|---|---|---|
+| `abcdefghij` | `jihgfedcba` | Ne |
+| `ababababab` | `bababababa` | Ne |
+| `aaaaaaaaaa` | `bbbbbbbbbb` | Ne |
