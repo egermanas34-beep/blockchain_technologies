@@ -200,3 +200,117 @@ Mažiausias užfiksuotas bitų skirtumas buvo apie 0,4%, tai reiškia, kad kai k
 Maksimalios reikšmės ilgesnėms įvestims kai kuriais atvejais priartėjo prie orientacinių reikšmių. Pavyzdžiui, 1000 simbolių įvestims didžiausias HEX skirtumas siekė 94%, o bitų skirtumas – 54%. Tačiau pavieniai geri rezultatai nepakeičia bendros tendencijos, nes vidutinės reikšmės išlieka gerokai mažesnės už orientacines.
 Todėl galima teigti, kad dabartinė maišos funkcijos versija turi silpną lavinos efektą, nors ilgėjant įvesčiai jis pastebimai gerėja.
 Geras lavinos efektas savaime neįrodo atsparumo kolizijoms. Funkcija teoriškai galėtų stipriai pakeisti išvestį pakeitus vieną simbolį, tačiau vis tiek turėti lengvai randamų skirtingų įvesčių su vienoda maiša. Tokias silpnybes geriau atskleidžia 5 eksperimente atliktas kolizijų tikrinimas.
+
+### 7 eksperimentas
+
+#### Paieška be druskos
+
+Pirmiausia buvo apskaičiuota pasirinktos įvesties 3014 maišos reikšmė. Po to programa iš eilės sugeneravo visus kandidatus nuo 0000 iki 9999, apskaičiavo kiekvieno kandidato maišą ir palygino ją su tiksline maiša. Programa buvo vykdoma per visą kandidatų rinkinį net ir radus pirmą sutapimą, kad būtų galima aptikti visus kandidatus, turinčius tokią pačią maišos reikšmę.
+
+#### Paieška su druska
+
+Antroje eksperimento dalyje prie įvesties buvo pridėta vieša druska: H(input || salt)
+Druska buvo sugeneruota naudojant std::mt19937 generatorių su pradine reikšme(seed) 12345. Naudota 8 ASCII simbolių druska iš šios abėcėlės:
+abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+Kadangi naudojami ASCII simboliai, vienas druskos simbolis atitinka vieną baitą.
+Tikslinei įvesčiai buvo skaičiuojama:
+H("3014" || salt)
+Kadangi druska yra vieša, tikrinant kandidatus buvo galima apskaičiuoti:
+H(kandidatas || salt)
+visiems kandidatams nuo 0000 iki 9999.
+Gauti rezultatai:
+| Režimas | Bandymai | Sutapimai | Laikas(ms) |
+|---------|----------|-----------|------------|
+| be salt | 10000 | 1 | 18 |
+| su salt | 10000 | 1 | 6 |
+
+#### Slaptas atsitiktinumas
+
+Trečiuoju atveju nagrinėjama konstrukcija: H(input || r), kur r yra atsitiktinė, nežinoma reikšmė.
+Jeigu r yra nežinoma, tai neužtenka išbandyti 10000 galimų įvesčių, reikėtų spėti ir pačią r reikšmę, o dėl to spėjimo diapazonas labai padidėtų.
+Pavyzdžiui, jeigu r reikšmė yra sudaryta iš 8 simbolių ir kiekvienas iš jų yra pasirenkamas iš 62 simbolių abėcėlės, tai galimų r reikšmių yra 62^8. Todėl pradinį 10000 galimų įvesčių skaičių reiktų dauginti iš galimų r reikšmių skaičiaus.
+Vėliau atskleidus r galima perskaičiuoti H(input || r) ir patikrinti, ar rezultatas sutampa su anksčiau paskelbta maiša.
+
+## Galutinis apibendrinimas ir išvados
+
+Programa aprašyta C++ kalba.
+Naudota aplinka:
+Operacinė sistema - Windows 11,
+Kompiliatoriaus versija - g++ 10.3.0,
+C++ standartas - C++17,
+
+Norėdami paleisti šią programą turite atsisiųsti main.cpp failą.
+Programos sukompiliavimui naudokite komandą "g++ -std=c++17 main.cpp -o hash.exe"
+O programos paleidimui naudokite "./hash.exe".
+Programa leidžia įvesti duomenis rankiniu būdu, nuskaityti duomenis iš failo, generuoti failus.
+
+#### Algoritmo veikimo principas
+
+Maišos funkcijos tikslas – iš bet kokio ilgio įvesties suformuoti fiksuoto 256 bitų ilgio rezultatą. Maišai saugoti naudojamas std::array<uint32_t, 8>. Vienas unit32_t elementas sudaro 32 bitus, todėl 32\*8=256 bitai. Galutinė maiša pateikiama HEX formatu. Kadangi vienas HEX skaitmuo atitinka 4 bitus:256/4=64, todėl galutinę maišą visada sudaro 64 HEX skaitmenys.
+
+#### Algoritmo pseudokodas
+
+{
+Sukurti 8 elementų 32 bitų masyvą HASH
+Visas reikšmes nustatyti į 0
+
+Kiekvienam įvesties baitui i:
+baitas = įvestis[i]
+pozicija = i mod 8
+
+    HASH[pozicija] =
+        HASH[pozicija] + baitas * (i + 1)
+
+    Jei tai nėra pirmasis baitas:
+        HASH[pozicija] =
+            HASH[pozicija] + ankstesnio HASH elemento reikšmė
+
+Grąžinti visus 8 HASH elementus
+Kiekvieną elementą pateikti kaip 8 HEX skaitmenis
+}
+Algoritme baito reikšmė dauginama iš jo pozicijos, kad simbolio vieta įvestyje turėtų įtakos rezultatui. Taip siekiama, kad, pavyzdžiui, skirtinga simbolių tvarka pateiktų skirtingas maišos reikšmes. Papildomai naudojama ankstesnio maišos elemento reikšmė, kad vieno baito poveikis galėtų persiduoti tolimesniems maišos elementams.
+
+#### Įvesties kodavimas
+
+Failai skaitomi naudojant dvejetainį režimą: std::ios::binary. Tai leidžia išlaikyti tikslius failo baitus, įskaitant tarpus bei eilučių skirtukus. Taip pat yra naudojama UTF-8 koduotė lietuviškoms raidėms nuskaityti.
+
+#### Testų atkuriamumas
+
+Atsitiktiniams testų duomenims buvo naudotas std::mt19937, su fiksuota prasdine reikšme 12345. Atsitiktinių ASCII simbolių abėcėlė abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789. Naudojant tą patį generatorių, seed ir tą pačią programos versiją galima pakartotinai sugeneruoti tuos pačius testinius duomenis.
+Eksperimentuose naudoti įvesčių ilgiai ir kartojimų skaičiai buvo išsaugoti README bei pradiniuose rezultatų failuose.
+
+#### Versijų palyginimas
+
+Projektas buvo vystomas etapais
+| Versija | Pagrindiniai pakeitimai |
+| ----- | ----------------- |
+| v0.1 | Sukurta pradinė 256 bitų maišos algoritmo versija |
+| v0.11 | Pridėtas tikslus failų nuskaitymas ir pirmieji testai |
+| v0.12 | Patikrintas 256 bitų / 64 HEX simbolių išvesties formatas |
+| v0.13 | Patikrintas determinizmas |
+| v0.14 | Atliktas efektyvumo tyrimas |
+| v0.15 | Atliktas kolizijų tyrimas |
+| v0.16 | Atliktas lavinos efekto tyrimas |
+| v0.17 | Atliktas spėjimo, salt ir slapto atsitiktinumo eksperimentas |
+Kiekviename etape buvo plečiamas testavimas ir gerinamas programos gebėjimas tiksliai apdoroti įvesties baitus.
+
+#### Aptiktos silpnybės
+
+Svarbiausia aptikta silpnybė yra nepakankamas įvesties pokyčių pasklidimas per visą maišą.Trumpoms įvestims dalis 256 bitų išvesties gali likti nuliai. Pakeitus vieną simbolį kai kuriais atvejais pasikeičia tik labai maža galutinės maišos dalis.Lavinos efekto eksperimente mažiausias bitų skirtumas siekė tik apie 0,4%, o bendri vidurkiai buvo gerokai mažesni už orientacinę 50% reikšmę.Tuščiai įvesčiai gaunama visų nulių maiša. Tai yra tiesioginė dabartinės algoritmo konstrukcijos pasekmė.Algoritmas taip pat naudoja gana paprastas aritmetines operacijas ir neturi kriptografinėms maišos funkcijoms būdingos sudėtingos maišymo struktūros.Kolizijų testuose kolizijų nebuvo aptikta, tačiau tai nepaneigia galimų struktūrinių kolizijų ir neįrodo atsparumo kolizijoms.
+
+#### Kas pagerėjo, kas nepagerėjo
+
+Projekto metu pagerėjo programos įvesties apdorojimas, failų baitų išsaugojimas, testų atkuriamumas ir rezultatų pateikimas.Eksperimentai taip pat leido tiksliau nustatyti algoritmo elgesį skirtingoms įvestims.Tačiau testavimas atskleidė, kad dabartinis algoritmas turi silpną lavinos efektą.Ilgesnėms įvestims rezultatai gerėja, tačiau vidutiniai rezultatai vis tiek neatitinka to, ko būtų tikimasi iš stiprios kriptografinės maišos funkcijos.Efektyvumo požiūriu skaičiavimo laikas didėja kartu su įvesties dydžiu, nes algoritmas turi apdoroti kiekvieną įvesties baitą.
+
+#### Ko eksperimentai neįrodo
+
+Atlikti eksperimentai negali įrodyti:
+kad funkcija neturi kolizijų;
+kad funkcija yra kriptografiškai saugi;
+kad funkcija yra atspari visiems pirmavaizdžio paieškos metodams;
+funkcija tinkama slaptažodžiams saugoti.
+Eksperimentai tik parodo, kaip veikia mano algoritmas duotuose eksperimentuose.
+
+#### DI naudojimas
+
+Pradinė v0.1 algoritmo idėja ir pagrindinė realizacija buvo kuriama savarankiškai. Vėlesniuose darbo etapuose DI buvo naudojamas kaip pagalbinė priemuonė aiškinantis užduoties smulkmenas, tokias kaip galimus ekperimento realizavimo būdus, C++ kalbos konstrukcijas. DI pateikti pasiūlymai buvo peržiūrimi, pritaikomi arba atmetami pagal projekto reikalavimus ir asmeninį požiūrį.
