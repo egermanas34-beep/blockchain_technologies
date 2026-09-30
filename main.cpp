@@ -29,6 +29,7 @@ int eiluciuSkaicius(string & tekstas);
 string gautiIstrauka(string & tekstas, int kiekEiluciu);
 string generuotiASCII(int ilgis, std::mt19937& generatorius);
 string hashIString(std::array<uint32_t, 8>& hash);
+string pakeistiSimboli(string &tekstas, std::mt19937& generatorius);
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
@@ -393,4 +394,19 @@ string hashIString(std::array<uint32_t, 8>& hash)
         oss << std::hex << std::setw(8) << std::setfill('0') << h;
     }
     return oss.str();
+}
+string pakeistiSimboli(string &tekstas, std::mt19937& generatorius)
+{
+    string pakeistas = tekstas; 
+    std::uniform_int_distribution<int> dist(0, tekstas.length() - 1); // Atsitiktinė pozicija tekste    
+    std::uniform_int_distribution<int> simboliuDist(0, abecele.length() - 1); // Atsitiktinis simbolis iš abėcėlės
+    
+    int pozicija = dist(generatorius);// Atsitiktinė pozicija tekste
+    char naujasSimbolis = abecele[simboliuDist(generatorius)];// Atsitiktinis simbolis iš abėcėlės
+    while(pakeistas[pozicija] == naujasSimbolis) // Užtikriname, kad simboliai nesutaptų
+    {
+        naujasSimbolis = abecele[simboliuDist(generatorius)];
+    }
+    pakeistas[pozicija] = naujasSimbolis;
+    return pakeistas;
 }
