@@ -150,3 +150,14 @@ Eksperimento metu kiekvienai ištraukai atlikti 5 atskiri matavimai. Vieno matav
 Žemiau galite matyti laiko priklausomybės nuo baitų dydžio lentelę.
 ![Maišos skaičiavimo laiko priklausomybė nuo įvesties dydžio](images/hash-lentele.jpg)
 Matome, kad laikas didėjant baitų skaičiui irgi didėja, tačiau 8 eilučių laiko matavime matome anomaliją, nes vidutinis laikas vos ne dukart mažesnis negu 4 eilučių matavime. Visuose kituose matavimuose laiko tendencija išlieka tokia pati ir didėja.
+
+### 5 eksperimentas
+
+Pridėta funkcija generuoti atsitiktinius ASCII koduoties tekstus pagal nurodyta ilgi ir seed(pas mane 12345). ASCII simboliu abėcėlė aprašyta globaliame kintamajame const string abecele = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; Toliau pridėta nauja galimybė skaičiuoti kolizijų skaičių tarp sugeneruotų porų. Gautus rezultatus galite matyti lentelėje žemiau.
+
+| Ilgis | Kolizijų skaičius |
+| ----- | ----------------- |
+| 10    | 0                 |
+| 100   | 0                 |
+| 500   | 0                 |
+| 1000  | 0                 |
