@@ -176,3 +176,27 @@ Taip pat buvo patikrinta strukturuoti įvesčių rinkiniai - tekstas parašytas 
 | `abcdefghij` | `jihgfedcba` | Ne |
 | `ababababab` | `bababababa` | Ne |
 | `aaaaaaaaaa` | `bbbbbbbbbb` | Ne |
+
+### 6 eksperimentas
+
+Šio eksperimento tikslas buvo patikrinti mano maišos funkcijos lavinos efektą. Iš viso buvo sugeneruota 100000 porų, po 25000 porų kiekvienam įvesties ilgiui; 10, 100, 500, 1000 simbolių. Kiekvienoje poroje antroji sudaryta įvesti susidėjo iš pirmosios pakeičiant vieną atsitiktinį simbolį, nekeičiant įvesties ilgio.
+Maišos buvo lyginamos dviem būdais:
+
+- bitų skirtumas, apskaičiuojama, kiek procentų iš 256 maišos bitų skiriasi;
+- HEX skirtumas, apskaičiuojama, kiek procentų iš 64 HEX skaitmenų pozicijų skiriasi.
+  Gauti rezultatai:
+  | Ilgis | Vidurkis(hex) | Min(hex) | Max(hex) | Vidurkis(bitai) | Min(bitai) | Max(bitai) |
+  |-------|---------------|----------|----------|-----------------|------------|------------|
+  | 10 | 13% | 2% | 34% | 7% | 0,4% | 23% |
+  | 100 | 26% | 2% | 69% | 13% | 0,4% | 40% |
+  | 500 | 37% | 2% | 89% | 19% | 0,4% | 52% |
+  | 1000 | 40% | 2% | 94% | 21% | 0,4% | 54% |
+
+#### Išvados
+
+Rezultatai parodė, kad didėjant įvesties ilgiui lavinos efektas gerėja. 10 simbolių įvestims vidutiniškai skyrėsi apie 7% maišos bitų ir 13% HEX skaitmenų, o 1000 simbolių įvestims šios reikšmės padidėjo atitinkamai iki maždaug 21% ir 40%.
+Vis dėlto šie vidurkiai yra gerokai mažesni už orientacines nepriklausomų ir tolygiai pasiskirsčiusių maišos išvesčių reikšmes pateiktas užduotyje.
+Mažiausias užfiksuotas bitų skirtumas buvo apie 0,4%, tai reiškia, kad kai kuriais atvejais pakeitus vieną įvesties simbolį pasikeitė tik labai maža 256 bitų maišos dalis. Mažiausias HEX skirtumas buvo apie 2%.
+Maksimalios reikšmės ilgesnėms įvestims kai kuriais atvejais priartėjo prie orientacinių reikšmių. Pavyzdžiui, 1000 simbolių įvestims didžiausias HEX skirtumas siekė 94%, o bitų skirtumas – 54%. Tačiau pavieniai geri rezultatai nepakeičia bendros tendencijos, nes vidutinės reikšmės išlieka gerokai mažesnės už orientacines.
+Todėl galima teigti, kad dabartinė maišos funkcijos versija turi silpną lavinos efektą, nors ilgėjant įvesčiai jis pastebimai gerėja.
+Geras lavinos efektas savaime neįrodo atsparumo kolizijoms. Funkcija teoriškai galėtų stipriai pakeisti išvestį pakeitus vieną simbolį, tačiau vis tiek turėti lengvai randamų skirtingų įvesčių su vienoda maiša. Tokias silpnybes geriau atskleidžia 5 eksperimente atliktas kolizijų tikrinimas.

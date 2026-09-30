@@ -32,6 +32,7 @@ string hashIString(std::array<uint32_t, 8>& hash);
 string pakeistiSimboli(string &tekstas, std::mt19937& generatorius);
 int skaiciuotiBitus(uint32_t x);
 double bituSkirtumas(const std::array<uint32_t, 8>& hashA,const std::array<uint32_t, 8>& hashB);
+double hexSkirtumas(const string& hashA, const string& hashB);
 
 
 
@@ -263,13 +264,47 @@ int main() {
 
         for(int ilgis : ilgiai)
         {
+            double sumaHexai = 0;
+            double minHexai = 100;
+            double maxHexai = 0;
+            double sumaBitai = 0;
+            double minBitai = 100;
+            double maxBitai = 0;
             for(int i = 0; i< 25000; i++)
             {
                 string A = generuotiASCII(ilgis, generatorius);
                 string B = pakeistiSimboli(A, generatorius);
                 auto hashA = gautiHash(A);
                 auto hashB = gautiHash(B);
+
+                double bitai = bituSkirtumas(hashA, hashB);
+                double hexai = hexSkirtumas(hashIString(hashA), hashIString(hashB));
+                
+                sumaHexai += hexai;
+                if (hexai < minHexai) {
+                    minHexai = hexai;
+                }
+                if (hexai > maxHexai) {
+                    maxHexai = hexai;
+                }
+                
+                sumaBitai += bitai;
+                if (bitai < minBitai) {
+                    minBitai = bitai;
+                }
+                if (bitai > maxBitai) {
+                    maxBitai = bitai;
+                }   
             }
+            double vidurkisHexai = sumaHexai / 25000.0;
+            double vidurkisBitai = sumaBitai / 25000.0;
+            cout << "Ilgis: " << ilgis << endl;
+            cout << "Vidurkis (hex): " << vidurkisHexai << endl;
+            cout << "Min (hex): " << minHexai << endl;
+            cout << "Max (hex): " << maxHexai << endl;
+            cout << "Vidurkis (bitai): " << vidurkisBitai << endl;
+            cout << "Min (bitai): " << minBitai << endl;
+            cout << "Max (bitai): " << maxBitai << endl;
         }
     }
     //int baitai = gautiBaitus(tekstas);
@@ -455,4 +490,18 @@ double bituSkirtumas(const std::array<uint32_t, 8>& hashA, const std::array<uint
     }
 
     return 100.0 * skirtingi / 256.0;
+}
+double hexSkirtumas(const string& hashA, const string& hashB)
+{
+    int skirtingi = 0;
+
+    for (int i = 0; i < 64; i++)
+    {
+        if (hashA[i] != hashB[i])
+        {
+            skirtingi++;
+        }
+    }
+
+    return 100.0 * skirtingi / 64.0;
 }
