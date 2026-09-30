@@ -29,6 +29,12 @@ int eiluciuSkaicius(string & tekstas);
 string gautiIstrauka(string & tekstas, int kiekEiluciu);
 string generuotiASCII(int ilgis, std::mt19937& generatorius);
 string hashIString(std::array<uint32_t, 8>& hash);
+string pakeistiSimboli(string &tekstas, std::mt19937& generatorius);
+int skaiciuotiBitus(uint32_t x);
+double bituSkirtumas(const std::array<uint32_t, 8>& hashA,const std::array<uint32_t, 8>& hashB);
+double hexSkirtumas(const string& hashA, const string& hashB);
+
+
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
@@ -47,6 +53,7 @@ int main() {
    cout<<"7. Tikrinti kolizija su atsitiktiniu tekstu poromis"<<endl;
    cout<<"8. Tikrinti kolizija su atsitiktiniu tekstu globaliai"<<endl;
    cout<<"9. Tikrinti kolizija strukturuotu tekstu"<<endl;
+   cout<<"10. Tikrinti lavinos efekta"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -250,12 +257,63 @@ int main() {
             isvedimas(hash);
         }
     }
+    if(rinktis == 10)
+    {
+        std::mt19937 generatorius(12345);
+        int ilgiai[]={10, 100, 500, 1000};
+
+        for(int ilgis : ilgiai)
+        {
+            double sumaHexai = 0;
+            double minHexai = 100;
+            double maxHexai = 0;
+            double sumaBitai = 0;
+            double minBitai = 100;
+            double maxBitai = 0;
+            for(int i = 0; i< 25000; i++)
+            {
+                string A = generuotiASCII(ilgis, generatorius);
+                string B = pakeistiSimboli(A, generatorius);
+                auto hashA = gautiHash(A);
+                auto hashB = gautiHash(B);
+
+                double bitai = bituSkirtumas(hashA, hashB);
+                double hexai = hexSkirtumas(hashIString(hashA), hashIString(hashB));
+                
+                sumaHexai += hexai;
+                if (hexai < minHexai) {
+                    minHexai = hexai;
+                }
+                if (hexai > maxHexai) {
+                    maxHexai = hexai;
+                }
+                
+                sumaBitai += bitai;
+                if (bitai < minBitai) {
+                    minBitai = bitai;
+                }
+                if (bitai > maxBitai) {
+                    maxBitai = bitai;
+                }   
+            }
+            double vidurkisHexai = sumaHexai / 25000.0;
+            double vidurkisBitai = sumaBitai / 25000.0;
+            cout << "Ilgis: " << ilgis << endl;
+            cout << "Vidurkis (hex): " << vidurkisHexai << endl;
+            cout << "Min (hex): " << minHexai << endl;
+            cout << "Max (hex): " << maxHexai << endl;
+            cout << "Vidurkis (bitai): " << vidurkisBitai << endl;
+            cout << "Min (bitai): " << minBitai << endl;
+            cout << "Max (bitai): " << maxBitai << endl;
+        }
+    }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
     //cout << std::hex << baitai << endl;
     
     return 0;
 }
+
 int gautiBaitus(string t)
 {
     int visiBaitai = 0;
@@ -393,4 +451,57 @@ string hashIString(std::array<uint32_t, 8>& hash)
         oss << std::hex << std::setw(8) << std::setfill('0') << h;
     }
     return oss.str();
+}
+string pakeistiSimboli(string &tekstas, std::mt19937& generatorius)
+{
+    string pakeistas = tekstas; 
+    std::uniform_int_distribution<int> dist(0, tekstas.length() - 1); // Atsitiktinė pozicija tekste    
+    std::uniform_int_distribution<int> simboliuDist(0, abecele.length() - 1); // Atsitiktinis simbolis iš abėcėlės
+    
+    int pozicija = dist(generatorius);// Atsitiktinė pozicija tekste
+    char naujasSimbolis = abecele[simboliuDist(generatorius)];// Atsitiktinis simbolis iš abėcėlės
+    while(pakeistas[pozicija] == naujasSimbolis) // Užtikriname, kad simboliai nesutaptų
+    {
+        naujasSimbolis = abecele[simboliuDist(generatorius)];
+    }
+    pakeistas[pozicija] = naujasSimbolis;
+    return pakeistas;
+}
+int skaiciuotiBitus(uint32_t x)
+{
+    int kiek = 0;
+
+    while (x != 0)
+    {
+        kiek += x & 1;// Patikriname, ar paskutinis bitas yra 1
+        x >>= 1;// Bitų poslinkis į dešinę
+    }
+
+    return kiek;
+}
+double bituSkirtumas(const std::array<uint32_t, 8>& hashA, const std::array<uint32_t, 8>& hashB)
+{
+    int skirtingi = 0;
+
+    for (int i = 0; i < 8; i++)
+    {
+        uint32_t skirtumas = hashA[i] ^ hashB[i];
+        skirtingi += skaiciuotiBitus(skirtumas);
+    }
+
+    return 100.0 * skirtingi / 256.0;
+}
+double hexSkirtumas(const string& hashA, const string& hashB)
+{
+    int skirtingi = 0;
+
+    for (int i = 0; i < 64; i++)
+    {
+        if (hashA[i] != hashB[i])
+        {
+            skirtingi++;
+        }
+    }
+
+    return 100.0 * skirtingi / 64.0;
 }
