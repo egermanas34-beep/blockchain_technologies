@@ -7,6 +7,8 @@
 #include <random>
 #include <limits>
 #include <chrono>
+#include <sstream>
+#include <unordered_map>
 #include <windows.h>
 using std::string;
 using std::cin;
@@ -26,6 +28,7 @@ void failuKurimas();
 int eiluciuSkaicius(string & tekstas);
 string gautiIstrauka(string & tekstas, int kiekEiluciu);
 string generuotiASCII(int ilgis, std::mt19937& generatorius);
+string hashIString(std::array<uint32_t, 8>& hash);
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
@@ -41,7 +44,8 @@ int main() {
    cout<<"4. Patikrtinti determinizmą sekoje"<<endl;
    cout<<"5. Patikrinti determinizmą su vienodu tekstu"<<endl;
    cout<<"6. Dirbti su konstitucija.txt"<<endl;
-   cout<<"7. Tikrinti kolizija su atsitiktiniu tekstu"<<endl;
+   cout<<"7. Tikrinti kolizija su atsitiktiniu tekstu poromis"<<endl;
+   cout<<"8. Tikrinti kolizija su atsitiktiniu tekstu globaliai"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -175,6 +179,56 @@ int main() {
                 kolizijuSkaicius++;
             }
         }
+        cout << "Iš " << poruSkaicius << " porų, kolizijų skaičius: " << kolizijuSkaicius << endl;
+    }
+    if(rinktis == 8)
+    {
+        cout<< "Tikriname kolizijas su atsitiktiniu tekstu globaliai..." << endl;
+        const int poruSkaicius = 100000;
+        int kolizijuSkaicius = 0;
+        const int ilgis = 1000;
+        std::mt19937 generatorius(12345);
+        std::unordered_map<string, string> matytiHash; // Naudojame unordered_map, kad saugotume hash reikšmes
+        for(int i = 0; i < poruSkaicius; i++)
+        { 
+            string A = generuotiASCII(ilgis, generatorius);
+            string B = generuotiASCII(ilgis, generatorius);
+            while(A == B) // Užtikriname, kad A ir B būtų skirtingi
+            {
+                B = generuotiASCII(ilgis, generatorius);
+            }
+            string tekstai[2] = {A, B}; // Sukuriame masyvą su dviem tekstais
+
+            for (const string& tekstas : tekstai) // Iteruojame per abu tekstus
+            {
+                auto hash = gautiHash(tekstas);
+                string hashTekstas = hashIString(hash);// Konvertuojame hash į string
+
+                // Ieškome hash reikšmės masyve
+                auto rastas = matytiHash.find(hashTekstas);
+
+                if (rastas != matytiHash.end()) // Jei rastas, tai reiškia, kad jau turime tą hash reikšmę
+                {
+                    if (rastas->second != tekstas) // Patikriname, ar tekstai skiriasi
+                    {
+                        kolizijuSkaicius++;
+
+                        cout << "Rasta kolizija!" << endl;
+                        cout << "1: " << rastas->second << endl;
+                        cout << "2: " << tekstas << endl;
+                        cout << "Hash: " << hashTekstas << endl;
+                    }
+                }
+                else
+                {
+                    matytiHash[hashTekstas] = tekstas;
+                }
+            }
+        }
+        
+        
+        
+        
         cout << "Iš " << poruSkaicius << " porų, kolizijų skaičius: " << kolizijuSkaicius << endl;
     }
     //int baitai = gautiBaitus(tekstas);
@@ -312,4 +366,12 @@ string generuotiASCII(int ilgis, std::mt19937& generatorius)
         tekstas += abecele[dist(generatorius)];
     }
     return tekstas;
+}
+string hashIString(std::array<uint32_t, 8>& hash)
+{
+    std::ostringstream oss;
+    for (const auto& h : hash) {
+        oss << std::hex << std::setw(8) << std::setfill('0') << h;
+    }
+    return oss.str();
 }
