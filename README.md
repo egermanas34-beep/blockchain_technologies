@@ -297,3 +297,20 @@ Kiekviename etape buvo plečiamas testavimas ir gerinamas programos gebėjimas t
 #### Aptiktos silpnybės
 
 Svarbiausia aptikta silpnybė yra nepakankamas įvesties pokyčių pasklidimas per visą maišą.Trumpoms įvestims dalis 256 bitų išvesties gali likti nuliai. Pakeitus vieną simbolį kai kuriais atvejais pasikeičia tik labai maža galutinės maišos dalis.Lavinos efekto eksperimente mažiausias bitų skirtumas siekė tik apie 0,4%, o bendri vidurkiai buvo gerokai mažesni už orientacinę 50% reikšmę.Tuščiai įvesčiai gaunama visų nulių maiša. Tai yra tiesioginė dabartinės algoritmo konstrukcijos pasekmė.Algoritmas taip pat naudoja gana paprastas aritmetines operacijas ir neturi kriptografinėms maišos funkcijoms būdingos sudėtingos maišymo struktūros.Kolizijų testuose kolizijų nebuvo aptikta, tačiau tai nepaneigia galimų struktūrinių kolizijų ir neįrodo atsparumo kolizijoms.
+
+#### Kas pagerėjo, kas nepagerėjo
+
+Projekto metu pagerėjo programos įvesties apdorojimas, failų baitų išsaugojimas, testų atkuriamumas ir rezultatų pateikimas.Eksperimentai taip pat leido tiksliau nustatyti algoritmo elgesį skirtingoms įvestims.Tačiau testavimas atskleidė, kad dabartinis algoritmas turi silpną lavinos efektą.Ilgesnėms įvestims rezultatai gerėja, tačiau vidutiniai rezultatai vis tiek neatitinka to, ko būtų tikimasi iš stiprios kriptografinės maišos funkcijos.Efektyvumo požiūriu skaičiavimo laikas didėja kartu su įvesties dydžiu, nes algoritmas turi apdoroti kiekvieną įvesties baitą.
+
+#### Ko eksperimentai neįrodo
+
+Atlikti eksperimentai negali įrodyti:
+kad funkcija neturi kolizijų;
+kad funkcija yra kriptografiškai saugi;
+kad funkcija yra atspari visiems pirmavaizdžio paieškos metodams;
+funkcija tinkama slaptažodžiams saugoti.
+Eksperimentai tik parodo, kaip veikia mano algoritmas duotuose eksperimentuose.
+
+#### DI naudojimas
+
+Pradinė v0.1 algoritmo idėja ir pagrindinė realizacija buvo kuriama savarankiškai. Vėlesniuose darbo etapuose DI buvo naudojamas kaip pagalbinė priemuonė aiškinantis užduoties smulkmenas, tokias kaip galimus ekperimento realizavimo būdus, C++ kalbos konstrukcijas. DI pateikti pasiūlymai buvo peržiūrimi, pritaikomi arba atmetami pagal projekto reikalavimus ir asmeninį požiūrį.
