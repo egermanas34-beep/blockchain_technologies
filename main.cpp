@@ -30,6 +30,10 @@ string gautiIstrauka(string & tekstas, int kiekEiluciu);
 string generuotiASCII(int ilgis, std::mt19937& generatorius);
 string hashIString(std::array<uint32_t, 8>& hash);
 string pakeistiSimboli(string &tekstas, std::mt19937& generatorius);
+int skaiciuotiBitus(uint32_t x);
+double bituSkirtumas(const std::array<uint32_t, 8>& hashA,const std::array<uint32_t, 8>& hashB);
+
+
 
 int main() {
     SetConsoleOutputCP(CP_UTF8); // Nustatome konsolės išvesties koduotę į UTF-8
@@ -48,6 +52,7 @@ int main() {
    cout<<"7. Tikrinti kolizija su atsitiktiniu tekstu poromis"<<endl;
    cout<<"8. Tikrinti kolizija su atsitiktiniu tekstu globaliai"<<endl;
    cout<<"9. Tikrinti kolizija strukturuotu tekstu"<<endl;
+   cout<<"10. Tikrinti lavinos efekta"<<endl;
    int rinktis;
    cin>>rinktis;
     if(rinktis == 1)
@@ -251,12 +256,29 @@ int main() {
             isvedimas(hash);
         }
     }
+    if(rinktis == 10)
+    {
+        std::mt19937 generatorius(12345);
+        int ilgiai[]={10, 100, 500, 1000};
+
+        for(int ilgis : ilgiai)
+        {
+            for(int i = 0; i< 25000; i++)
+            {
+                string A = generuotiASCII(ilgis, generatorius);
+                string B = pakeistiSimboli(A, generatorius);
+                auto hashA = gautiHash(A);
+                auto hashB = gautiHash(B);
+            }
+        }
+    }
     //int baitai = gautiBaitus(tekstas);
     //cout << "Baitų skaičius: " << baitai << endl;
     //cout << std::hex << baitai << endl;
     
     return 0;
 }
+
 int gautiBaitus(string t)
 {
     int visiBaitai = 0;
@@ -409,4 +431,28 @@ string pakeistiSimboli(string &tekstas, std::mt19937& generatorius)
     }
     pakeistas[pozicija] = naujasSimbolis;
     return pakeistas;
+}
+int skaiciuotiBitus(uint32_t x)
+{
+    int kiek = 0;
+
+    while (x != 0)
+    {
+        kiek += x & 1;// Patikriname, ar paskutinis bitas yra 1
+        x >>= 1;// Bitų poslinkis į dešinę
+    }
+
+    return kiek;
+}
+double bituSkirtumas(const std::array<uint32_t, 8>& hashA, const std::array<uint32_t, 8>& hashB)
+{
+    int skirtingi = 0;
+
+    for (int i = 0; i < 8; i++)
+    {
+        uint32_t skirtumas = hashA[i] ^ hashB[i];
+        skirtingi += skaiciuotiBitus(skirtumas);
+    }
+
+    return 100.0 * skirtingi / 256.0;
 }
